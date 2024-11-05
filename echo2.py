@@ -7,6 +7,7 @@ Created on Tue Oct 29 15:06:35 2024
 import numpy as np
 import RPi.GPIO as GPIO
 import time
+import os
 
 def reading():
 # remember to change the GPIO values below to match your sensors
@@ -67,7 +68,7 @@ def sensor(distance):
         distance.append(distance_l)
   
 #defintion to turn LEDs on in diff patterns as distance to object changes
-def light(distance_l):
+def alarm(distance_l):
     #need to change all pins assigned, maybe port to a bus if wires get too
     #much
     LED0 = 10
@@ -84,52 +85,52 @@ def light(distance_l):
 
     sensor()
     
-    if 150 < distance_l[-1] <= 200 :
-        GPIO.output(LED0, GPIO.HIGH)
+    while True :
+        if 150 < distance_l[-1] <= 200 :
+            GPIO.output(LED0, GPIO.HIGH)
         
-        for LED in lights[1:-1] : 
-            GPIO.output(LED, GPIO.LOW) 
+            for LED in lights[1:-1] : 
+                GPIO.output(LED, GPIO.LOW) 
         
-    elif  100 < distance_l[-1]  <= 150:
-        GPIO.output(LED01, GPIO.HIGH)
+        elif  100 < distance_l[-1]  <= 150:
+            GPIO.output(LED01, GPIO.HIGH)
         
        # for LED in lights[1:-1]: 
             #GPIO.output(LED, GPIO.LOW)
             
-    elif 50  < distance_l[-1]  <= 100:
-        GPIO.output(LED02, GPIO.HIGH)
+        elif 50  < distance_l[-1]  <= 100:
+            GPIO.output(LED02, GPIO.HIGH)
         
        # for LED in lights[2:-1]: 
             #GPIO.output(LED, GPIO.LOW)
         
-    elif 25  < distance_l[-1]  <= 50:
-        GPIO.output(LED03, GPIO.HIGH)
+        elif 25  < distance_l[-1]  <= 50:
+            GPIO.output(LED03, GPIO.HIGH)
         
-        GPIO.output(LED03.LOW)
+           # GPIO.output(LED03.LOW)
      
-    #flashing lights
-    elif 0 <= distance_l[-1] <= 25:
-        while True:
-            for LED in lights:
-                GPIO.output(LED, GPIO.LOW)
-
-            time.sleep(0.01*int(distance_l[-1]))
+        #flashing lights
+        elif 0 <= distance_l[-1] <= 25:
             
-            for LED in lights:
+                for LED in lights:
+                    GPIO.output(LED, GPIO.LOW)
+
+                time.sleep(0.01*int(distance_l[-1]))
+            
                 GPIO.output(LED, GPIO.HIGH)
                 
-            time.sleep(0.01*int(distance_l[-1]))
+                time.sleep(0.01*int(distance_l[-1]))
             
             
-    else:
-        for LED in lights:
-            GPIO.output(LED, GPIO.LOW)
+        else:
+            for LED in lights:
+                GPIO.output(LED, GPIO.LOW)
             
     return
         
         
 
-    
+alarm()    
     
     
 #print("the distance is " + str(reading()) + "cm" )
