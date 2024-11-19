@@ -6,10 +6,14 @@ Created on Tue Oct 29 15:06:35 2024
 import numpy as np
 import time 
 import RPi.GPIO as GPIO
+import os 
+import pygame
 
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
+pygame.mixer.init()
+
 def reading():
 
     TRIG = 27
@@ -49,6 +53,7 @@ def reading():
 
 def sensor():
     lights = [10,9,11,5]
+    sound = pygame.mixer.Sound('beep2.mp3')
     for LED in lights:
         GPIO.setup(LED, GPIO.OUT)
         GPIO.output(LED, GPIO.LOW)
@@ -79,7 +84,7 @@ def sensor():
             for LED in lights[0:2] : 
                 GPIO.output(LED, GPIO.HIGH) 
     
-            GPIO.output(lights[3], GPIO.LOW) 
+            GPIO.output(lights[-1], GPIO.LOW) 
                 
         elif 25  < int(d) <= 50:
             print("d is 25-50")
@@ -91,14 +96,15 @@ def sensor():
             
             for LED in lights:
                 GPIO.output(LED, GPIO.HIGH)
-
-                   
+                
+            
+            sound.play()       
             time.sleep(0.01*float(d))
             
             for LED in lights:
                 GPIO.output(LED, GPIO.LOW)
-
                 
+            sound.stop()
             time.sleep(0.01*float(d))
                 
         
@@ -115,4 +121,5 @@ def sensor():
     return
     
 sensor()
+GPIO.cleanup()
 #print(f"{sensor()}")
